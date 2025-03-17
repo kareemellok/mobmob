@@ -13,21 +13,35 @@ const PORT = process.env.PORT || 3000;
 
 job.start()
 
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+let isConnected = false;
+
+app.use(async (req, res, next) => {
+    if (!isConnected) {
+      try {
+        await connectDB();
+        isConnected = true;
+        console.log('✅ DB connected');
+      } catch (err) {
+        console.error('❌ DB connection error', err);
+        return res.status(500).send('DB connection failed');
+      }
+    }
+    next();
+  });
+
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", bookRoutes);
 app.get("/", (req, res) => {
     res.send("Hello World");
 })
 
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-connectDB()
-.then(() => {
-    app.listen(PORT, () => {
-        console.log(`Server Online on Port => ${PORT}`)
-    })
-}).catch((error) => {
-    console.log(`Database connection failed => ${error}`);
-})
+
+
+
+
+export default app
