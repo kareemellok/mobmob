@@ -17,21 +17,28 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-let isConnected = false;
+// let isConnected = false;
 
-app.use(async (req, res, next) => {
-    if (!isConnected) {
-      try {
-        await connectDB();
-        isConnected = true;
-        console.log('✅ DB connected');
-      } catch (err) {
-        console.error('❌ DB connection error', err);
-        return res.status(500).send('DB connection failed');
-      }
-    }
-    next();
-  });
+// app.use(async (req, res, next) => {
+//     if (!isConnected) {
+//       try {
+//         await connectDB();
+//         isConnected = true;
+//         console.log('✅ DB connected');
+//       } catch (err) {
+//         console.error('❌ DB connection error', err);
+//         return res.status(500).send('DB connection failed');
+//       }
+//     }
+//     next();
+//   });
+connectDB()
+    .then(() => {
+        console.log("Database connected");
+    })
+    .catch((error) => {
+        console.log("Error connecting to database", error);
+    })
 
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", bookRoutes);
