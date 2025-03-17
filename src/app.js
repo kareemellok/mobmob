@@ -15,7 +15,7 @@ job.start()
 
 app.use("/api/auth", authRoutes);
 app.use("/api/auth", bookRoutes);
-app.get("/", (res) => {
+app.get("/", (req, res) => {
     res.send("Hello World");
 })
 
